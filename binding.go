@@ -10,15 +10,22 @@ import (
 	metrics "github.com/ipfs/go-metrics-interface"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/metric"
+
+	metricsprometheus "github.com/MichaelMure/go-metrics-otel/prometheus"
+	"github.com/MichaelMure/go-metrics-otel/split"
 )
 
 var log logging.EventLogger = logging.Logger("metrics-otel")
 
 func Inject() error {
-	return metrics.InjectImpl(newCreator)
+	return metrics.InjectImpl(NewCreator)
 }
 
-func newCreator(name, helptext string) metrics.Creator {
+func InjectOtelAndPrometheus() error {
+	return metrics.InjectImpl(split.NewSplit(NewCreator, metricsprometheus.NewCreator))
+}
+
+func NewCreator(name, helptext string) metrics.Creator {
 	// Note: prometheus and OTEL convention are fairy different. The code below is quite simplistic, and ideally
 	// the go-metrics-interface creator API would be reworked to account for it.
 

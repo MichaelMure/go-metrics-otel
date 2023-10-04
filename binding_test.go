@@ -13,7 +13,7 @@ func TestName(t *testing.T) {
 		{"has_total", "default", "has_total"},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			c := newCreator(tc.name, "helptext").(*creator)
+			c := NewCreator(tc.name, "helptext").(*creator)
 			if c.meterName != tc.meter {
 				t.Errorf("unexpected meter name: expected \"%s\", got \"%s\"", tc.meter, c.meterName)
 			}
